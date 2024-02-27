@@ -2,7 +2,7 @@ const connection = require("../../../DB/connection.js");
 const addproject = async function(req, res){
     const {title, description, level, materials, size, comments, crafter_email, skills} = await req.body;
     try{     
-        if(req.user.role!='admin' || req.user.role!='organizer'){
+        if(req.user.role!='admin' ){
             return res.json("you cannot access this page")
         }
     const sql = `INSERT INTO project (title,description,level,materials,size,comments,crafter_email,skills) VALUES ('${title}', '${description}', '${level}','${materials}','${size}','${comments}','${crafter_email}','${skills}') `   
@@ -25,8 +25,8 @@ const addproject = async function(req, res){
 
 const deleteproject =  function(req, res){
     const { id } = req.body;
-     try{  
-      
+     try{     
+       
         const sql = `DELETE FROM project WHERE id = '${id}'`;
  
          // Execute the SQL query
@@ -47,19 +47,18 @@ const deleteproject =  function(req, res){
  
  }
 
-const updateproject = async function(req, res){
-    const {id,title, description, level, materials, size, comments, skills} = await req.body;
+ const updateproject = async function(req, res) {
+    const { id, title, description, level, materials, size, comments, skills } = req.body;
 
     const sql = `UPDATE project
-                 SET title='${title}', description='${description}', level=${level}, materials='${materials}', size=${size}, comments='${comments},skills='${skills}
+                 SET title='${title}', description='${description}', level=${level}, materials='${materials}', size=${size}, comments='${comments}', skills='${skills}'
                  WHERE id=${id}`;
                  
     connection.execute(sql, function(error, result) {
         if (error) {
-            if(error.errno=1064){  return res.json(error);}
-          
+            return res.json(error);
         }
-        return res.json("updated successfully");
+        return res.json("Updated successfully");
     });
 }
 
